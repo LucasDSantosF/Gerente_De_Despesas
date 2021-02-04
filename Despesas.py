@@ -82,6 +82,11 @@ def homepage():
     bt_alt = Button(f_alt, text="Alterar" ,fg="#3cc", bg="#ff0", font=("Arial",13))
     bt_alt.grid(column=0, row=4, columnspan=2, pady=7)
 
+    # Estatísticas
+
+
+    # Histórico
+
     home.mainloop()
 
 
