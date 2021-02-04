@@ -2,14 +2,18 @@ from tkinter import *
 from tkinter import ttk
 
 
-janela = Tk()
+def voltar():
+    home.destroy()
+    login()
 
 def homepage():
     janela.destroy()
+    global home
     home = Tk()
     home.title("Home")
     home.geometry("700x500")
     home.configure(background="#099")
+    
 
     nb = ttk.Notebook(home)
     nb.pack()
@@ -47,7 +51,7 @@ def homepage():
     e_valor.grid(column=1,row=2, sticky="w",padx=10,pady=5)
     e_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_novo, text="Enviar" ,fg="#3cc", bg="#ff0", font=("Arial",13))
+    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13))
     bt_novo.grid(column=0, row=4, columnspan=2, pady=7)
 
     # pesquisa
@@ -60,7 +64,7 @@ def homepage():
     e_nome = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
     e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#3cc", bg="#ff0", font=("Arial",13))
+    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13))
     bt_novo.grid(column=0, row=2, columnspan=2, pady=7)
 
     # Alterar
@@ -79,18 +83,99 @@ def homepage():
     e_novo = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
     e_novo.grid(column=1,row=2, sticky="w",padx=10, pady=5)
 
-    bt_alt = Button(f_alt, text="Alterar" ,fg="#3cc", bg="#ff0", font=("Arial",13))
+    bt_alt = Button(f_alt, text="Alterar" ,fg="#03c", bg="#ff0", font=("Arial",13))
     bt_alt.grid(column=0, row=4, columnspan=2, pady=7)
 
     # Estatísticas
+    nsp = Label(f_stat, bg="#3cc")
+    nsp.grid(column=0, row=0, pady=7)
+
+    bl_ganho = Label(f_stat, text="Ganho Mensal (R$)", fg="#ff0", bg="#3cc", font=("Arial",13))
+    bl_ganho.grid(column=0, row=2, sticky='w',padx=10,pady=5)
+
+    vganho = Label(f_stat, text="200", fg="#03c", bg="#3cc", font=("Arial",13))
+    vganho.grid(column=1, row=2, sticky='w',padx=10,pady=5)
+
+    lb_gasto = Label(f_stat, text="Gasto Mensal (R$)", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_gasto.grid(column=0, row=3, sticky='w',padx=10,pady=5)
+
+    vgasto = Label(f_stat, text="120", fg="#03c", bg="#3cc", font=("Arial",13))
+    vgasto.grid(column=1, row=3, sticky='w',padx=10,pady=5)
+
+    lb_prod = Label(f_stat, text="5 produtos mais comprados", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_prod.grid(column=0, row=4, sticky='w',padx=10,pady=5)
 
 
     # Histórico
+    nsp = Label(f_hist, bg="#3cc")
+    nsp.grid(column=0, row=0, pady=7)
+
+    lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
+
+    lb_prod = Label(f_hist, text="Histórico Completo", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_prod.grid(column=0, row=2, sticky='w',padx=10,pady=5)
+
+
+    # menu opcoes
+
+    Barra = Menu(home)
+    menu = Menu(Barra, tearoff=0)
+    menu.add_command(label="Saldo")
+    menu.add_separator()
+    menu.add_command(label="Logout", command=voltar)
+    menu.add_command(label="Fechar", command=lambda: home.destroy())
+    Barra.add_cascade(label="Opções", menu=menu)
+
+    home.config(menu=Barra)
 
     home.mainloop()
 
 
+def CriarConta():
+    janela.destroy()
+    global app
+    app = Tk()
+    app.title("Criar Conta")
+    app.geometry("700x500")
+    app.configure(background="#099")
+
+    Senha = StringVar()
+
+    lb = Label(app, text="Criar Conta", bg="#099", fg="#ff0", font=("Arial", 15))
+
+    lnome = Label(app, text="Nome", bg="#099", fg="#ff0", font=("Arial",13) )
+    lsenha = Label(app, text="Senha", bg="#099", fg="#ff0",font=("Arial",13))
+    lsaldo = Label(app, text="Saldo", bg="#099", fg="#ff0",font=("Arial",13))
+
+    lnome.grid(column=1, row=2, padx=10)
+    lsenha.grid(column=1, row=3, padx=10, pady=7)
+    lsaldo.grid(column=1, row=4, padx=10)
+    lb.grid(column=1, row=0, pady= 20, columnspan=2)
+
+    enome = Entry(app, bg="#3cc", fg="#ff0", font=("Arial",13))
+    esenha = Entry(app, textvariable=Senha, show="@", bg="#3cc", fg="#ff0", font=("Arial",13))
+    esaldo = Entry(app, bg="#3cc", fg="#ff0", font=("Arial",13))
+    
+    enome.grid(column=2, row=2)
+    esenha.grid(column=2, row=3)
+    esaldo.grid(column=2, row=4)
+
+    bt_cria =  Button(app, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
+    bt_cria.grid(column=1, row=5, ipadx=17, pady=20, columnspan=2)
+
+
+
+    sp = Label(app, bg="#099")
+    sp.grid(column=0, row=0, padx=50)
+
+
+    app.mainloop()
+    
+
 def login():
+    global janela
+    janela = Tk()
     janela.title("Login Despesas")
     janela.geometry("700x500")
     janela.configure(background="#099")
@@ -113,7 +198,7 @@ def login():
     esenha.grid(column=4, row=3)
 
     bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=homepage)
-    bt_cria =  Button(janela, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13))
+    bt_cria =  Button(janela, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
     bt_Entra.grid(column=2, row=4, ipadx=17)
     bt_cria.grid(column=4, row=4)
 
@@ -126,3 +211,4 @@ def login():
 
 
 login()
+
