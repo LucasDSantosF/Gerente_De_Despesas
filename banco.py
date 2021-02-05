@@ -70,7 +70,7 @@ def ConsulUser(senha):
 
 
 def Atualizar(novo, Id):
-    Dados = f"UPDATE tb_despesas SET PRODUTO='{novo}' WHERE ID={Id}"
+    Dados = f"UPDATE tb_despesas SET PRODUTO='{novo}' WHERE local_ID={Id}"
     try:
         c = vcone.cursor()
         c.execute(Dados)
