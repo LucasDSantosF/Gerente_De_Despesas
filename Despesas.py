@@ -1,13 +1,49 @@
 from tkinter import *
 from tkinter import ttk
+from banco import *
 
 
 def voltar():
     home.destroy()
     login()
 
+
+# funcoes da home
+
+
+
+def MostraMes():
+    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+    tv.column('produto', minwidth=0, width=50)
+    tv.column('valor', minwidth=0, width=50)
+    tv.column('pag', minwidth=0, width=50)
+    tv.column("data", minwidth=0, width=50)
+
+    tv.heading("produto", text="Produto")
+    tv.heading("valor", text="Valor")
+    tv.heading("pag", text="Pagamento")
+    tv.heading('data', text='data')
+
+    tv.grid(column=0, row=3,pady=7, columnspan=2)
+
+
+def MostrarCompleto():
+    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+    tv.column('produto', minwidth=0, width=50)
+    tv.column('valor', minwidth=0, width=50)
+    tv.column('pag', minwidth=0, width=50)
+    tv.column("data", minwidth=0, width=50)
+
+    tv.heading("produto", text="Produto")
+    tv.heading("valor", text="Valor")
+    tv.heading("pag", text="Pagamento")
+    tv.heading('data', text='data')
+
+    tv.grid(column=0, row=3,pady=7, columnspan=2)
+
 def homepage():
-    janela.destroy()
     global home
     home = Tk()
     home.title("Home")
@@ -17,6 +53,9 @@ def homepage():
 
     nb = ttk.Notebook(home)
     nb.pack()
+
+    global f_pesq, f_stat, f_hist, f_alt
+    
 
     f_novo = Frame(nb, bg="#3cc")
     f_stat = Frame(nb, bg="#3cc")
@@ -35,47 +74,110 @@ def homepage():
     nsp = Label(f_novo, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+
+
+    combostyle = ttk.Style()
+    combostyle.theme_create('combostyle', parent='alt',
+                         settings = {'TCombobox':
+                                     {'configure':
+                                      {'selectbackground': '#09f',
+                                       'fieldbackground': '#09f',
+                                       'background': '#ff0',
+                                       'foreground': "#fff"
+                                       }}}
+                         )
+
+    combostyle.theme_use('combostyle')
+
+    lista = ["Crédito", "Débito","Avista"]
+
+            # Função novo produto
+    def NovoProduto():
+        if e_produto.get() !='' and e_valor.get() !='' and box_pag.get()!='' and e_data.get()!='':
+            res  =CadProduto(Id, e_produto.get(), e_valor.get(), box_pag.get(), e_data.get())
+            if res ==1:
+                e_produto.delete(0, END)
+                e_valor.delete(0, END)
+                e_data.delete(0, END)
+                Label(f_novo,text='Enviado com sucesso!!', fg='#ff0', bg='#3cc', font=('Arial', 11)).grid(column=0, row=7, columnspan=2)
+            else:
+                Label(f_novo,text='Erro ao enviar', fg='#f00', bg='#3cc', font=('Arial', 11)).grid(column=0, row=7, columnspan=2)
+
+
     lb_nome = Label(f_novo, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_valor = Label(f_novo, text="Valor(R$)", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_pag = Label(f_novo, text="Tipo de pagamento", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_data = Label(f_novo, text="Data da Compra", fg="#ff0", bg="#3cc", font=("Arial", 13))
 
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
     lb_valor.grid(column=0, row=2, sticky='w',padx=10,pady=5)
     lb_pag.grid(column=0, row=3, sticky='w',padx=10,pady=5)
+    lb_data.grid(column=0, row=4, sticky="w", padx=10, pady=5)
 
-    e_nome = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_produto = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
     e_valor = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_pag = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
+    box_pag = ttk.Combobox(f_novo, values=lista)
+    box_pag.set("Crédito")
+    box_pag['state'] = 'readonly'
+    e_data = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
 
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_produto.grid(column=1,row=1, sticky="w",padx=10,pady=5)
     e_valor.grid(column=1,row=2, sticky="w",padx=10,pady=5)
-    e_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
+    box_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
+    e_data.grid(column=1,row=4, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13))
-    bt_novo.grid(column=0, row=4, columnspan=2, pady=7)
+    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=NovoProduto)
+    bt_novo.grid(column=0, row=6, columnspan=2, pady=7)
 
     # pesquisa
     nsp = Label(f_pesq, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+        # Função Pesquisar
+    def Pesquisar():
+
+        if e_name.get() != '':
+            res = ConsulProduto(Id)
+            tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+            tv.column('produto', minwidth=0, width=80)
+            tv.column('valor', minwidth=0, width=80)
+            tv.column('pag', minwidth=0, width=80)
+            tv.column("data", minwidth=0, width=80)
+
+            tv.heading("produto", text="Produto")
+            tv.heading("valor", text="Valor")
+            tv.heading("pag", text="Pagamento")
+            tv.heading('data', text='data')
+
+            tv.grid(column=0, row=3,pady=7, columnspan=2)
+            for i in res:
+                if i[1] == e_name.get():
+                    tv.insert('', 'end', values=(i[1], i[2], i[3], i[4]))
+
+
     lb_nome = Label(f_pesq, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
-    e_nome = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_name = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_name.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13))
+    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=Pesquisar)
     bt_novo.grid(column=0, row=2, columnspan=2, pady=7)
+
 
     # Alterar
     nsp = Label(f_alt, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+        # Função Alterar
+    def Alterar():
+        print("")
     lb_nome = Label(f_alt, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
-    e_nome = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_alt = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_alt.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
     lb_novo = Label(f_alt, text="Novo Nome", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_novo.grid(column=0,row=2, sticky="w",padx=10, pady=5)
@@ -113,15 +215,20 @@ def homepage():
     lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
 
+    bt_mes = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostraMes)
+    bt_mes.grid(column=1, row=1, columnspan=2, pady=7)
+
     lb_prod = Label(f_hist, text="Histórico Completo", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=2, sticky='w',padx=10,pady=5)
 
+    bt_comp = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostrarCompleto)
+    bt_comp.grid(column=1, row=2, columnspan=2, pady=7)
 
     # menu opcoes
 
     Barra = Menu(home)
     menu = Menu(Barra, tearoff=0)
-    menu.add_command(label="Saldo")
+    menu.add_command(label="Dados Bancarios")
     menu.add_separator()
     menu.add_command(label="Logout", command=voltar)
     menu.add_command(label="Fechar", command=lambda: home.destroy())
@@ -130,6 +237,23 @@ def homepage():
     home.config(menu=Barra)
 
     home.mainloop()
+
+
+# Funções Criar Contar
+
+def NovaConta(nome, senha, saldo):
+    if nome != "" or senha !="":
+        if len(senha) == 7:
+            consul = CheckSenha(senha)
+            if consul == 1:
+                res = CadUser(nome,senha,saldo)
+                if res == 1:
+                    consulid = ConsulUser(senha)
+                    Id = consulid[0][0]
+                    app.destroy()
+                    homepage()
+
+
 
 
 def CriarConta():
@@ -161,7 +285,7 @@ def CriarConta():
     esenha.grid(column=2, row=3)
     esaldo.grid(column=2, row=4)
 
-    bt_cria =  Button(app, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
+    bt_cria = Button(app, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=lambda:NovaConta(enome.get(),esenha.get(),esaldo.get()))
     bt_cria.grid(column=1, row=5, ipadx=17, pady=20, columnspan=2)
 
 
@@ -172,6 +296,21 @@ def CriarConta():
 
     app.mainloop()
     
+
+# Funções Login
+
+def CheckLogin(nome, senha):
+
+    if nome != "" or senha != "":
+        if len(senha) == 7:
+            res = ConsulUser(senha)
+            if nome == res[0][1] and senha == res[0][2]:
+                global Id
+                Id = res[0][0]
+                janela.destroy()
+                homepage()
+
+
 
 def login():
     global janela
@@ -197,7 +336,7 @@ def login():
     enome.grid(column=2, row=3)
     esenha.grid(column=4, row=3)
 
-    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=homepage)
+    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=lambda:CheckLogin(enome.get(), esenha.get()))
     bt_cria =  Button(janela, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
     bt_Entra.grid(column=2, row=4, ipadx=17)
     bt_cria.grid(column=4, row=4)
