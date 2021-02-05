@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from banco import *
 
 
 def voltar():
@@ -7,7 +8,6 @@ def voltar():
     login()
 
 def homepage():
-    janela.destroy()
     global home
     home = Tk()
     home.title("Home")
@@ -132,6 +132,23 @@ def homepage():
     home.mainloop()
 
 
+# Funções Criar Contar
+
+def NovaConta(nome, senha, saldo):
+    if nome != "" or senha !="":
+        if len(senha) == 7:
+            consul = CheckSenha(senha)
+            if consul == 1:
+                res = CadUser(nome,senha,saldo)
+                if res == 1:
+                    consulid = ConsulUser(senha)
+                    Id = consulid[0][0]
+                    app.destroy()
+                    homepage()
+
+
+
+
 def CriarConta():
     janela.destroy()
     global app
@@ -161,7 +178,7 @@ def CriarConta():
     esenha.grid(column=2, row=3)
     esaldo.grid(column=2, row=4)
 
-    bt_cria =  Button(app, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
+    bt_cria = Button(app, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=lambda:NovaConta(enome.get(),esenha.get(),esaldo.get()))
     bt_cria.grid(column=1, row=5, ipadx=17, pady=20, columnspan=2)
 
 
@@ -172,6 +189,21 @@ def CriarConta():
 
     app.mainloop()
     
+
+# Funções Login
+
+def CheckLogin(nome, senha):
+
+    if nome != "" or senha != "":
+        if len(senha) < 7:
+            res = ConsulUser(senha)
+            if nome == res[0][1] and senha == res[0][2]:
+                global Id
+                Id = res[0][0]
+                janela.destroy()
+                homepage()
+
+
 
 def login():
     global janela
@@ -197,7 +229,7 @@ def login():
     enome.grid(column=2, row=3)
     esenha.grid(column=4, row=3)
 
-    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=homepage)
+    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=lambda:CheckLogin(enome.get(), Senha.get()))
     bt_cria =  Button(janela, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
     bt_Entra.grid(column=2, row=4, ipadx=17)
     bt_cria.grid(column=4, row=4)
