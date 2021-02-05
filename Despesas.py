@@ -7,6 +7,61 @@ def voltar():
     home.destroy()
     login()
 
+
+# funcoes da home
+
+def NovoProduto(sel):
+    print(sel)
+
+
+def Pesquisar(nome):
+    
+    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+    tv.column('produto', minwidth=0, width=50)
+    tv.column('valor', minwidth=0, width=50)
+    tv.column('pag', minwidth=0, width=50)
+    tv.column("data", minwidth=0, width=50)
+
+    tv.heading("produto", text="Produto")
+    tv.heading("valor", text="Valor")
+    tv.heading("pag", text="Pagamento")
+    tv.heading('data', text='data')
+
+    tv.grid(column=0, row=3,pady=7, columnspan=2)
+
+
+def MostraMes():
+    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+    tv.column('produto', minwidth=0, width=50)
+    tv.column('valor', minwidth=0, width=50)
+    tv.column('pag', minwidth=0, width=50)
+    tv.column("data", minwidth=0, width=50)
+
+    tv.heading("produto", text="Produto")
+    tv.heading("valor", text="Valor")
+    tv.heading("pag", text="Pagamento")
+    tv.heading('data', text='data')
+
+    tv.grid(column=0, row=3,pady=7, columnspan=2)
+
+
+def MostrarCompleto():
+    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+    tv.column('produto', minwidth=0, width=50)
+    tv.column('valor', minwidth=0, width=50)
+    tv.column('pag', minwidth=0, width=50)
+    tv.column("data", minwidth=0, width=50)
+
+    tv.heading("produto", text="Produto")
+    tv.heading("valor", text="Valor")
+    tv.heading("pag", text="Pagamento")
+    tv.heading('data', text='data')
+
+    tv.grid(column=0, row=3,pady=7, columnspan=2)
+
 def homepage():
     global home
     home = Tk()
@@ -17,6 +72,9 @@ def homepage():
 
     nb = ttk.Notebook(home)
     nb.pack()
+
+    global f_pesq, f_stat, f_hist, f_alt
+    
 
     f_novo = Frame(nb, bg="#3cc")
     f_stat = Frame(nb, bg="#3cc")
@@ -35,24 +93,45 @@ def homepage():
     nsp = Label(f_novo, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+    combostyle = ttk.Style()
+    combostyle.theme_create('combostyle', parent='alt',
+                         settings = {'TCombobox':
+                                     {'configure':
+                                      {'selectbackground': '#09f',
+                                       'fieldbackground': '#09f',
+                                       'background': '#ff0',
+                                       'foreground': "#fff"
+                                       }}}
+                         )
+
+    combostyle.theme_use('combostyle')
+
+    lista = ["Crédito", "Débito","Avista"]
+
     lb_nome = Label(f_novo, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_valor = Label(f_novo, text="Valor(R$)", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_pag = Label(f_novo, text="Tipo de pagamento", fg="#ff0", bg="#3cc", font=("Arial",13))
+    lb_data = Label(f_novo, text="Data da Compra", fg="#ff0", bg="#3cc", font=("Arial", 13))
 
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
     lb_valor.grid(column=0, row=2, sticky='w',padx=10,pady=5)
     lb_pag.grid(column=0, row=3, sticky='w',padx=10,pady=5)
+    lb_data.grid(column=0, row=4, sticky="w", padx=10, pady=5)
 
     e_nome = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
     e_valor = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_pag = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
+    box_pag = ttk.Combobox(f_novo, values=lista)
+    box_pag.set("Crédito")
+    box_pag['state'] = 'readonly'
+    e_data = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
 
     e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
     e_valor.grid(column=1,row=2, sticky="w",padx=10,pady=5)
-    e_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
+    box_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
+    e_data.grid(column=1,row=4, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13))
-    bt_novo.grid(column=0, row=4, columnspan=2, pady=7)
+    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=lambda:NovoProduto(box_pag.get()))
+    bt_novo.grid(column=0, row=6, columnspan=2, pady=7)
 
     # pesquisa
     nsp = Label(f_pesq, bg="#3cc")
@@ -64,8 +143,9 @@ def homepage():
     e_nome = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
     e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13))
+    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=lambda: Pesquisar(e_nome))
     bt_novo.grid(column=0, row=2, columnspan=2, pady=7)
+
 
     # Alterar
     nsp = Label(f_alt, bg="#3cc")
@@ -113,15 +193,20 @@ def homepage():
     lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
 
+    bt_mes = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostraMes)
+    bt_mes.grid(column=1, row=1, columnspan=2, pady=7)
+
     lb_prod = Label(f_hist, text="Histórico Completo", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=2, sticky='w',padx=10,pady=5)
 
+    bt_comp = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostrarCompleto)
+    bt_comp.grid(column=1, row=2, columnspan=2, pady=7)
 
     # menu opcoes
 
     Barra = Menu(home)
     menu = Menu(Barra, tearoff=0)
-    menu.add_command(label="Saldo")
+    menu.add_command(label="Dados Bancarios")
     menu.add_separator()
     menu.add_command(label="Logout", command=voltar)
     menu.add_command(label="Fechar", command=lambda: home.destroy())
@@ -195,7 +280,7 @@ def CriarConta():
 def CheckLogin(nome, senha):
 
     if nome != "" or senha != "":
-        if len(senha) < 7:
+        if len(senha) == 7:
             res = ConsulUser(senha)
             if nome == res[0][1] and senha == res[0][2]:
                 global Id
@@ -229,7 +314,7 @@ def login():
     enome.grid(column=2, row=3)
     esenha.grid(column=4, row=3)
 
-    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=lambda:CheckLogin(enome.get(), Senha.get()))
+    bt_Entra = Button(janela, text="Entrar", background="#ff0", fg="#099", font=("Arial",13), command=lambda:CheckLogin(enome.get(), esenha.get()))
     bt_cria =  Button(janela, text="Criar Conta", background="#ff0", fg="#099",font=("Arial",13), command=CriarConta)
     bt_Entra.grid(column=2, row=4, ipadx=17)
     bt_cria.grid(column=4, row=4)
