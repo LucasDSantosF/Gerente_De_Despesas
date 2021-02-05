@@ -42,8 +42,11 @@ def CadProduto(Id, produto, valor, pag, data):
         c = vcone.cursor()
         c.execute(dados)
         vcone.commit()
+        return 1
+        print('deu bom')
     except:
-        print("ERRO")
+        print("deu ruim")
+        return 0
 
 
 def ConsulProduto(Id):

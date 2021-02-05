@@ -10,25 +10,6 @@ def voltar():
 
 # funcoes da home
 
-def NovoProduto(sel):
-    print(sel)
-
-
-def Pesquisar(nome):
-    
-    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
-
-    tv.column('produto', minwidth=0, width=50)
-    tv.column('valor', minwidth=0, width=50)
-    tv.column('pag', minwidth=0, width=50)
-    tv.column("data", minwidth=0, width=50)
-
-    tv.heading("produto", text="Produto")
-    tv.heading("valor", text="Valor")
-    tv.heading("pag", text="Pagamento")
-    tv.heading('data', text='data')
-
-    tv.grid(column=0, row=3,pady=7, columnspan=2)
 
 
 def MostraMes():
@@ -93,6 +74,8 @@ def homepage():
     nsp = Label(f_novo, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+
+
     combostyle = ttk.Style()
     combostyle.theme_create('combostyle', parent='alt',
                          settings = {'TCombobox':
@@ -108,6 +91,19 @@ def homepage():
 
     lista = ["Crédito", "Débito","Avista"]
 
+            # Função novo produto
+    def NovoProduto():
+        if e_produto.get() !='' and e_valor.get() !='' and box_pag.get()!='' and e_data.get()!='':
+            res  =CadProduto(Id, e_produto.get(), e_valor.get(), box_pag.get(), e_data.get())
+            if res ==1:
+                e_produto.delete(0, END)
+                e_valor.delete(0, END)
+                e_data.delete(0, END)
+                Label(f_novo,text='Enviado com sucesso!!', fg='#ff0', bg='#3cc', font=('Arial', 11)).grid(column=0, row=7, columnspan=2)
+            else:
+                Label(f_novo,text='Erro ao enviar', fg='#f00', bg='#3cc', font=('Arial', 11)).grid(column=0, row=7, columnspan=2)
+
+
     lb_nome = Label(f_novo, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_valor = Label(f_novo, text="Valor(R$)", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_pag = Label(f_novo, text="Tipo de pagamento", fg="#ff0", bg="#3cc", font=("Arial",13))
@@ -118,32 +114,55 @@ def homepage():
     lb_pag.grid(column=0, row=3, sticky='w',padx=10,pady=5)
     lb_data.grid(column=0, row=4, sticky="w", padx=10, pady=5)
 
-    e_nome = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_produto = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
     e_valor = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
     box_pag = ttk.Combobox(f_novo, values=lista)
     box_pag.set("Crédito")
     box_pag['state'] = 'readonly'
     e_data = Entry(f_novo, fg="#03c", bg="#0ff", font=("Arial",13))
 
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_produto.grid(column=1,row=1, sticky="w",padx=10,pady=5)
     e_valor.grid(column=1,row=2, sticky="w",padx=10,pady=5)
     box_pag.grid(column=1,row=3, sticky="w",padx=10,pady=5)
     e_data.grid(column=1,row=4, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=lambda:NovoProduto(box_pag.get()))
+    bt_novo = Button(f_novo, text="Enviar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=NovoProduto)
     bt_novo.grid(column=0, row=6, columnspan=2, pady=7)
 
     # pesquisa
     nsp = Label(f_pesq, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+        # Função Pesquisar
+    def Pesquisar():
+
+        if e_name.get() != '':
+            res = ConsulProduto(Id)
+            tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
+
+            tv.column('produto', minwidth=0, width=80)
+            tv.column('valor', minwidth=0, width=80)
+            tv.column('pag', minwidth=0, width=80)
+            tv.column("data", minwidth=0, width=80)
+
+            tv.heading("produto", text="Produto")
+            tv.heading("valor", text="Valor")
+            tv.heading("pag", text="Pagamento")
+            tv.heading('data', text='data')
+
+            tv.grid(column=0, row=3,pady=7, columnspan=2)
+            for i in res:
+                if i[1] == e_name.get():
+                    tv.insert('', 'end', values=(i[1], i[2], i[3], i[4]))
+
+
     lb_nome = Label(f_pesq, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
-    e_nome = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_name = Entry(f_pesq, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_name.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
-    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=lambda: Pesquisar(e_nome))
+    bt_novo = Button(f_pesq, text="Pesquisar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=Pesquisar)
     bt_novo.grid(column=0, row=2, columnspan=2, pady=7)
 
 
@@ -151,11 +170,14 @@ def homepage():
     nsp = Label(f_alt, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+        # Função Alterar
+    def Alterar():
+        print("")
     lb_nome = Label(f_alt, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
-    e_nome = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_nome.grid(column=1,row=1, sticky="w",padx=10,pady=5)
+    e_alt = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
+    e_alt.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
     lb_novo = Label(f_alt, text="Novo Nome", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_novo.grid(column=0,row=2, sticky="w",padx=10, pady=5)
