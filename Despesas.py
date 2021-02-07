@@ -8,41 +8,6 @@ def voltar():
     login()
 
 
-# funcoes da home
-
-
-
-def MostraMes():
-    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
-
-    tv.column('produto', minwidth=0, width=50)
-    tv.column('valor', minwidth=0, width=50)
-    tv.column('pag', minwidth=0, width=50)
-    tv.column("data", minwidth=0, width=50)
-
-    tv.heading("produto", text="Produto")
-    tv.heading("valor", text="Valor")
-    tv.heading("pag", text="Pagamento")
-    tv.heading('data', text='data')
-
-    tv.grid(column=0, row=3,pady=7, columnspan=2)
-
-
-def MostrarCompleto():
-    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
-
-    tv.column('produto', minwidth=0, width=50)
-    tv.column('valor', minwidth=0, width=50)
-    tv.column('pag', minwidth=0, width=50)
-    tv.column("data", minwidth=0, width=50)
-
-    tv.heading("produto", text="Produto")
-    tv.heading("valor", text="Valor")
-    tv.heading("pag", text="Pagamento")
-    tv.heading('data', text='data')
-
-    tv.grid(column=0, row=3,pady=7, columnspan=2)
-
 def homepage():
     global home
     home = Tk()
@@ -213,7 +178,6 @@ def homepage():
             Atualizar(e_novo.get(), int(valor[0]))
 
 
-
     lb_nome = Label(f_alt, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
@@ -256,6 +220,55 @@ def homepage():
     nsp = Label(f_hist, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
+        # Funções do histórico
+    def MostrarCompleto():
+
+        res = ConsulProduto(Id)
+
+        tv = ttk.Treeview(f_pesq, columns=("id, produto","valor","pag","data"), show="headings")
+
+        tv.column('id', minwidth=0, width=50)
+        tv.column('produto', minwidth=0, width=50)
+        tv.column('valor', minwidth=0, width=50)
+        tv.column('pag', minwidth=0, width=50)
+        tv.column("data", minwidth=0, width=50)
+
+        tv.heading("id", text="ID")
+        tv.heading("produto", text="Produto")
+        tv.heading("valor", text="Valor")
+        tv.heading("pag", text="Pagamento")
+        tv.heading('data', text='data')
+
+        tv.grid(column=0, row=4,pady=7, columnspan=2)
+        for i in res:
+            tv.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
+
+    
+    def MostraMes():
+        
+        tv = ttk.Treeview(f_pesq, columns=("id, produto","valor","pag","data"), show="headings")
+
+        tv.column('id', minwidth=0, width=50)
+        tv.column('produto', minwidth=0, width=50)
+        tv.column('valor', minwidth=0, width=50)
+        tv.column('pag', minwidth=0, width=50)
+        tv.column("data", minwidth=0, width=50)
+
+        tv.heading("id", text="ID")
+        tv.heading("produto", text="Produto")
+        tv.heading("valor", text="Valor")
+        tv.heading("pag", text="Pagamento")
+        tv.heading('data', text='data')
+
+        tv.grid(column=0, row=2,pady=7, columnspan=2)
+
+        res = ConsulProduto(Id)
+        dat = i[len(i)-1][4]
+        ult =  dat[3:5]
+        
+
+
+
     lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
 
@@ -263,10 +276,10 @@ def homepage():
     bt_mes.grid(column=1, row=1, columnspan=2, pady=7)
 
     lb_prod = Label(f_hist, text="Histórico Completo", fg="#ff0", bg="#3cc", font=("Arial",13))
-    lb_prod.grid(column=0, row=2, sticky='w',padx=10,pady=5)
+    lb_prod.grid(column=0, row=3, sticky='w',padx=10,pady=5)
 
     bt_comp = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostrarCompleto)
-    bt_comp.grid(column=1, row=2, columnspan=2, pady=7)
+    bt_comp.grid(column=1, row=3, columnspan=2, pady=7)
 
     # menu opcoes
 
