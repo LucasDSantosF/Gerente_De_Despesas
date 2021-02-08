@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from banco import *
+import datetime
 
 
 def voltar():
@@ -222,54 +223,57 @@ def homepage():
 
         # Funções do histórico
     def MostrarCompleto():
-
         res = ConsulProduto(Id)
 
-        tv = ttk.Treeview(f_pesq, columns=("id, produto","valor","pag","data"), show="headings")
+        tvC = ttk.Treeview(f_hist, columns=("id", "produto","valor","pag","data"), show="headings")
 
-        tv.column('id', minwidth=0, width=50)
-        tv.column('produto', minwidth=0, width=50)
-        tv.column('valor', minwidth=0, width=50)
-        tv.column('pag', minwidth=0, width=50)
-        tv.column("data", minwidth=0, width=50)
+        tvC.column('id', minwidth=0, width=70)
+        tvC.column('produto', minwidth=0, width=70)
+        tvC.column('valor', minwidth=0, width=70)
+        tvC.column('pag', minwidth=0, width=70)
+        tvC.column("data", minwidth=0, width=70)
 
-        tv.heading("id", text="ID")
-        tv.heading("produto", text="Produto")
-        tv.heading("valor", text="Valor")
-        tv.heading("pag", text="Pagamento")
-        tv.heading('data', text='data')
+        tvC.heading("id", text="ID")
+        tvC.heading("produto", text="Produto")
+        tvC.heading("valor", text="Valor")
+        tvC.heading("pag", text="Pagamento")
+        tvC.heading('data', text='data')
 
-        tv.grid(column=0, row=4,pady=7, columnspan=2)
+        tvC.grid(column=0, row=4,pady=7, columnspan=2)
         for i in res:
-            tv.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
+            tvC.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
 
     
     def MostraMes():
         
-        tv = ttk.Treeview(f_pesq, columns=("id, produto","valor","pag","data"), show="headings")
+        tvM = ttk.Treeview(f_hist, columns=("id", "produto","valor","pag","data"), show="headings")
 
-        tv.column('id', minwidth=0, width=50)
-        tv.column('produto', minwidth=0, width=50)
-        tv.column('valor', minwidth=0, width=50)
-        tv.column('pag', minwidth=0, width=50)
-        tv.column("data", minwidth=0, width=50)
+        tvM.column('id', minwidth=0, width=70)
+        tvM.column('produto', minwidth=0, width=70)
+        tvM.column('valor', minwidth=0, width=70)
+        tvM.column('pag', minwidth=0, width=70)
+        tvM.column("data", minwidth=0, width=70)
 
-        tv.heading("id", text="ID")
-        tv.heading("produto", text="Produto")
-        tv.heading("valor", text="Valor")
-        tv.heading("pag", text="Pagamento")
-        tv.heading('data', text='data')
+        tvM.heading("id", text="ID")
+        tvM.heading("produto", text="Produto")
+        tvM.heading("valor", text="Valor")
+        tvM.heading("pag", text="Pagamento")
+        tvM.heading('data', text='data')
 
-        tv.grid(column=0, row=2,pady=7, columnspan=2)
-
-        res = ConsulProduto(Id)
-        dat = i[len(i)-1][4]
-        ult =  dat[3:5]
+        tvM.grid(column=0, row=2,pady=7, columnspan=2)
         
+        data = str(datetime.datetime.now())
+        atual= f'{data[5:7]}/{data[2:4]}'
+        res = ConsulProduto(Id)
+        print(atual)
+        for i in res:
+            tex = i[4][3:]
+            print(tex)
+            if tex == atual:
+                tvM.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
 
-
-
-    lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
+        
+    lb_prod = Label(f_hist, text="Este mes", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
 
     bt_mes = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostraMes)
