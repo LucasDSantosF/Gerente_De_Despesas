@@ -1,47 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from banco import *
+import datetime
 
 
 def voltar():
     home.destroy()
     login()
 
-
-# funcoes da home
-
-
-
-def MostraMes():
-    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
-
-    tv.column('produto', minwidth=0, width=50)
-    tv.column('valor', minwidth=0, width=50)
-    tv.column('pag', minwidth=0, width=50)
-    tv.column("data", minwidth=0, width=50)
-
-    tv.heading("produto", text="Produto")
-    tv.heading("valor", text="Valor")
-    tv.heading("pag", text="Pagamento")
-    tv.heading('data', text='data')
-
-    tv.grid(column=0, row=3,pady=7, columnspan=2)
-
-
-def MostrarCompleto():
-    tv = ttk.Treeview(f_pesq, columns=("produto","valor","pag","data"), show="headings")
-
-    tv.column('produto', minwidth=0, width=50)
-    tv.column('valor', minwidth=0, width=50)
-    tv.column('pag', minwidth=0, width=50)
-    tv.column("data", minwidth=0, width=50)
-
-    tv.heading("produto", text="Produto")
-    tv.heading("valor", text="Valor")
-    tv.heading("pag", text="Pagamento")
-    tv.heading('data', text='data')
-
-    tv.grid(column=0, row=3,pady=7, columnspan=2)
 
 def homepage():
     global home
@@ -171,22 +137,65 @@ def homepage():
     nsp.grid(column=0, row=0, pady=7)
 
         # Função Alterar
+    def Procurar():
+
+        if e_alt.get() != '':
+            
+            res = ConsulProduto(Id)
+
+            lb_nome = Label(f_alt, text="Selecione para produto ha ser alterado", fg="#ff0", bg="#3cc", font=("Arial",12))
+            lb_nome.grid(column=0,row=3, sticky="w",padx=10, pady=5)
+
+            global tv
+
+            tv = ttk.Treeview(f_alt, columns=('id',"produto","valor","pag","data"), show="headings")
+
+            tv.column('id', minwidth=0, width=70)
+            tv.column('produto', minwidth=0, width=70)
+            tv.column('valor', minwidth=0, width=70)
+            tv.column('pag', minwidth=0, width=70)
+            tv.column("data", minwidth=0, width=70)
+
+            tv.heading('id', text='Id')
+            tv.heading("produto", text="Produto")
+            tv.heading("valor", text="Valor")
+            tv.heading("pag", text="Pagamento")
+            tv.heading('data', text='data')
+
+
+            tv.grid(column=0, row=4,pady=7, columnspan=2)
+
+            for i in res:
+                if i[1] == e_alt.get():
+                    tv.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
+
+
     def Alterar():
-        print("")
+        print(e_novo.get())
+        if e_novo.get() != '':
+            item = tv.selection()[0]
+            valor = tv.item(item, "values")
+
+            Atualizar(e_novo.get(), int(valor[0]))
+
+
     lb_nome = Label(f_alt, text="Nome do produto", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_nome.grid(column=0,row=1, sticky="w",padx=10, pady=5)
 
     e_alt = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
     e_alt.grid(column=1,row=1, sticky="w",padx=10,pady=5)
 
+    bt_buc = Button(f_alt, text="Procurar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=Procurar)
+    bt_buc.grid(column=0, row=2, columnspan=2, pady=7)
+
     lb_novo = Label(f_alt, text="Novo Nome", fg="#ff0", bg="#3cc", font=("Arial",13))
-    lb_novo.grid(column=0,row=2, sticky="w",padx=10, pady=5)
+    lb_novo.grid(column=0,row=5, sticky="w",padx=10, pady=5)
 
     e_novo = Entry(f_alt, fg="#03c", bg="#0ff", font=("Arial",13))
-    e_novo.grid(column=1,row=2, sticky="w",padx=10, pady=5)
+    e_novo.grid(column=1,row=5, sticky="w",padx=10, pady=5)
 
-    bt_alt = Button(f_alt, text="Alterar" ,fg="#03c", bg="#ff0", font=("Arial",13))
-    bt_alt.grid(column=0, row=4, columnspan=2, pady=7)
+    bt_alt = Button(f_alt, text="Alterar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=Alterar)
+    bt_alt.grid(column=0, row=6, columnspan=2, pady=7)
 
     # Estatísticas
     nsp = Label(f_stat, bg="#3cc")
@@ -212,17 +221,69 @@ def homepage():
     nsp = Label(f_hist, bg="#3cc")
     nsp.grid(column=0, row=0, pady=7)
 
-    lb_prod = Label(f_hist, text="Ultimos 30 dias", fg="#ff0", bg="#3cc", font=("Arial",13))
+        # Funções do histórico
+    def MostrarCompleto():
+        res = ConsulProduto(Id)
+
+        tvC = ttk.Treeview(f_hist, columns=("id", "produto","valor","pag","data"), show="headings")
+
+        tvC.column('id', minwidth=0, width=70)
+        tvC.column('produto', minwidth=0, width=70)
+        tvC.column('valor', minwidth=0, width=70)
+        tvC.column('pag', minwidth=0, width=70)
+        tvC.column("data", minwidth=0, width=70)
+
+        tvC.heading("id", text="ID")
+        tvC.heading("produto", text="Produto")
+        tvC.heading("valor", text="Valor")
+        tvC.heading("pag", text="Pagamento")
+        tvC.heading('data', text='data')
+
+        tvC.grid(column=0, row=4,pady=7, columnspan=2)
+        for i in res:
+            tvC.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
+
+    
+    def MostraMes():
+        
+        tvM = ttk.Treeview(f_hist, columns=("id", "produto","valor","pag","data"), show="headings")
+
+        tvM.column('id', minwidth=0, width=70)
+        tvM.column('produto', minwidth=0, width=70)
+        tvM.column('valor', minwidth=0, width=70)
+        tvM.column('pag', minwidth=0, width=70)
+        tvM.column("data", minwidth=0, width=70)
+
+        tvM.heading("id", text="ID")
+        tvM.heading("produto", text="Produto")
+        tvM.heading("valor", text="Valor")
+        tvM.heading("pag", text="Pagamento")
+        tvM.heading('data', text='data')
+
+        tvM.grid(column=0, row=2,pady=7, columnspan=2)
+        
+        data = str(datetime.datetime.now())
+        atual= f'{data[5:7]}/{data[2:4]}'
+        res = ConsulProduto(Id)
+        print(atual)
+        for i in res:
+            tex = i[4][3:]
+            print(tex)
+            if tex == atual:
+                tvM.insert('', 'end', values=(i[5], i[1], i[2], i[3], i[4]))
+
+        
+    lb_prod = Label(f_hist, text="Este mes", fg="#ff0", bg="#3cc", font=("Arial",13))
     lb_prod.grid(column=0, row=1, sticky='w',padx=10,pady=5)
 
     bt_mes = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostraMes)
     bt_mes.grid(column=1, row=1, columnspan=2, pady=7)
 
     lb_prod = Label(f_hist, text="Histórico Completo", fg="#ff0", bg="#3cc", font=("Arial",13))
-    lb_prod.grid(column=0, row=2, sticky='w',padx=10,pady=5)
+    lb_prod.grid(column=0, row=3, sticky='w',padx=10,pady=5)
 
     bt_comp = Button(f_hist, text="Mostrar" ,fg="#03c", bg="#ff0", font=("Arial",13), command=MostrarCompleto)
-    bt_comp.grid(column=1, row=2, columnspan=2, pady=7)
+    bt_comp.grid(column=1, row=3, columnspan=2, pady=7)
 
     # menu opcoes
 
